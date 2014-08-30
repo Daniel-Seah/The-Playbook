@@ -1,0 +1,26 @@
+---
+- include: oracle_debian.yml
+  when: java_distro|search("^oracle")
+
+- include: openjdk_debian.yml
+  when: java_distro|search("^openjdk")
+
+- name: Retrieve list of java alternatives
+  command: update-alternatives --list java
+  register: alternatives
+  changed_when: false
+
+- name: Set the current java as default
+  alternatives: name=java path={{ item }}
+  with_items: alternatives.stdout.split()
+  when: item|search("(?=.*{{ java_distro }})(?=.*\D{{ java_version }}\D).*")
+
+- name: Retrieve list of javac alternatives
+  command: update-alternatives --list javac
+  register: alternatives
+  changed_when: false
+
+- name: Set the current javac as default
+  alternatives: name=javac path={{ item }}
+  with_items: alternatives.stdout.split()
+  when: item|search("(?=.*{{ java_distro }})(?=.*\D{{ java_version }}\D).*")

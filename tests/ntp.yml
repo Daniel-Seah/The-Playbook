@@ -1,0 +1,11 @@
+---
+- name: Test ntp service
+  hosts: all
+  sudo: yes
+  roles:
+    - ntp
+  tasks:
+    - name: Test ntp handlers
+      command: /bin/true
+      notify:
+        - stop ntp

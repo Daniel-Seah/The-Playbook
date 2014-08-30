@@ -1,0 +1,11 @@
+---
+- name: Test gearman install
+  hosts: all
+  sudo: yes
+  roles:
+    - gearman
+  tasks:
+    - name: Test gearman service
+      command: /bin/true
+      notify:
+        - restart gearman

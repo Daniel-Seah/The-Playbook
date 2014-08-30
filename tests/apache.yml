@@ -1,0 +1,11 @@
+---
+- name: Test apache install
+  hosts: all
+  sudo: yes
+  roles:
+    - apache
+  tasks:
+    - name: Test apache handlers
+      command: /bin/true
+      notify:
+        - restart apache

@@ -1,0 +1,6 @@
+---
+- name: Test zeromq install
+  hosts: all
+  sudo: yes
+  roles:
+    - zeromq

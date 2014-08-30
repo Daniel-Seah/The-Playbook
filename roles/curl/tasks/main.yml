@@ -1,0 +1,10 @@
+---
+- name: Install cURL (Debian)
+  tags: curl
+  apt: name=curl state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Install cURL (RedHat)
+  tags: curl
+  yum: name=curl state=latest
+  when: ansible_os_family == 'RedHat'

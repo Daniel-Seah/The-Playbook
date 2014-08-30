@@ -1,0 +1,4 @@
+---
+- name: Install Oracle Java (RedHat)
+  tags: java
+  yum: name=java-1.{{ java_version }}.0-openjdk-devel state=latest

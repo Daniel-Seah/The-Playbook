@@ -1,0 +1,37 @@
+---
+- name: Check current RVM version
+  command: rvm version
+  register: rvm_current_version
+  changed_when: false
+  ignore_errors: yes
+
+- name: Check latest RVM version
+  tags: ruby
+  local_action: uri url=https://raw.githubusercontent.com/wayneeseguin/rvm/master/VERSION return_content=yes
+  sudo: no
+  run_once: yes
+  register: rvm_latest_version
+
+- name: Check if RVM needs update
+  tags: ruby
+  shell: /bin/true
+  when: rvm_current_version.failed is defined or rvm_current_version.stdout.split()[1].split('.')|join()|int < (rvm_latest_version.content|regex_replace('\s', '')).split('.')|join()|int
+  register: rvm_update
+  changed_when: false
+
+- name: Download RVM
+  tags: ruby
+  get_url: url=https://get.rvm.io dest=/tmp/rvm-installer.sh mode=0755
+  when: rvm_update.skipped is not defined
+
+- name: Prepopulate .rvmrc for root installs
+  lineinfile: dest=/root/.rvmrc create=yes line='{{ item }}'
+  sudo: yes
+  with_items:
+    - 'export rvm_prefix="$HOME"'
+    - 'export rvm_path="$HOME/.rvm"'  
+
+- name: Install RVM
+  tags: ruby
+  shell: /tmp/rvm-installer.sh --branch stable
+  when: rvm_update.skipped is not defined

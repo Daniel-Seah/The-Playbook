@@ -1,0 +1,10 @@
+---
+- name: Install Gearman (Debian)
+  tags: gearman
+  apt: name=gearman state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Install Gearman (RedHat)
+  tags: gearman
+  yum: name=gearmand state=latest
+  when: ansible_os_family == 'RedHat'

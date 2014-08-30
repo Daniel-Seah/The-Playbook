@@ -1,0 +1,6 @@
+---
+- name: Test git install
+  hosts: all
+  sudo: yes
+  roles:
+    - git

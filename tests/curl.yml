@@ -1,0 +1,6 @@
+---
+- name: Test curl install
+  hosts: all
+  sudo: yes
+  roles:
+    - curl

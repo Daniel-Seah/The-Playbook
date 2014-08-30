@@ -1,0 +1,6 @@
+---
+- name: Test build tool install
+  hosts: all
+  sudo: yes
+  roles:
+    - buildtools

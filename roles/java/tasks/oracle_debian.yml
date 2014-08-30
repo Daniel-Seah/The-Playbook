@@ -1,0 +1,12 @@
+---
+- name: Add the webupd8 APT apt_repository
+  tags: java
+  apt_repository: repo="ppa:webupd8team/java" state=present
+
+- name: Automatically select the Oracle License
+  tags: java
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+
+- name: Install Oracle Java (Debian)
+  tags: java
+  apt: name=oracle-java{{ java_version }}-installer state=latest

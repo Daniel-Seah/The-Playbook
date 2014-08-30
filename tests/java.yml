@@ -1,0 +1,16 @@
+---
+#- name: Testing local installation
+#  hosts: debian
+#  sudo: yes
+#  roles:
+#    - { role: java }
+#    - { role: java, version: 6 }
+#    - { role: java, distro: oracle, version: 7 }
+#    - { role: java, distro: oracle, version: 8 }
+    
+- name: Testing remote installation
+  hosts: redhat
+  sudo: yes
+  roles:
+    - { role: java }
+#    - { role: java, version: 6 }

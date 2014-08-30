@@ -1,0 +1,7 @@
+---
+- name: Test RVM install
+  hosts: all
+  sudo: yes
+  roles:
+    - ruby
+    - { role: ruby, ruby_version: jruby }

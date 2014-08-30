@@ -1,0 +1,10 @@
+---
+- name: Install ntp (Debian)
+  tags: ntp
+  apt: name=ntp state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Install ntp (RedHat)
+  tags: ntp
+  yum: name=ntp state=latest
+  when: ansible_os_family == 'RedHat'

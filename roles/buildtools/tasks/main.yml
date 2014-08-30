@@ -1,0 +1,27 @@
+---
+- name: Install build tools (Debian)
+  tags: build-tools
+  apt: name={{ item }} state=latest
+  when: ansible_os_family == 'Debian'
+  with_items:
+    - make
+    - automake
+    - g++
+
+- name: Install build tools (RedHat)
+  tags: build-tools
+  yum: name={{ item }} state=latest
+  when: ansible_os_family == 'RedHat'
+  with_items:
+    - uuid-devel
+    - libuuid
+    - libuuid-devel
+    - uuid
+    - boost-devel
+    - libevent
+    - libevent-devel
+    - automake
+    - pkgconfig
+    - libtool
+    - gcc-c++
+    - gperf

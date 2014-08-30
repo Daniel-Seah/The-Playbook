@@ -1,0 +1,26 @@
+---
+#- include: oracle_redhat.yml
+#  when: java_distro|search("^oracle")
+
+- include: openjdk_redhat.yml
+  when: java_distro|search("^openjdk")
+
+- name: Retrieve list of java alternatives
+  shell: alternatives --display java
+  register: alternatives
+  changed_when: false
+
+- name: Set the current java as default
+  shell: alternatives --set java {{ item }}
+  with_items: alternatives.stdout.split()|unique
+  when: item|search("^/(?=.*{{ java_distro }})(?=.*\D{{ java_version }}\D).*/java$")
+
+- name: Retrieve list of javac alternatives
+  shell: alternatives --display javac
+  register: alternatives
+  changed_when: false
+
+- name: Set the current javac as default
+  shell: alternatives --set javac {{ item }}
+  with_items: alternatives.stdout.split()|unique
+  when: item|search("^/(?=.*{{ java_distro }})(?=.*\D{{ java_version }}\D).*/javac$")

@@ -1,0 +1,11 @@
+---
+- name: Test ActiveMQ install
+  hosts: all
+  sudo: yes
+  roles:
+    - activemq
+  tasks:
+    - name: Test activemq handlers
+      command: /bin/true
+      notify:
+        - restart activemq

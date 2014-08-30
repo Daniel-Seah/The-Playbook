@@ -1,0 +1,21 @@
+---
+- name: start ntp
+  service: name={{ item.ntp_daemon }} state=started
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, ntp_daemon: ntp }
+    - { os: RedHat, ntp_daemon: ntpd }
+
+- name: stop ntp
+  service: name={{ item.ntp_daemon }} state=stopped
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, ntp_daemon: ntp }
+    - { os: RedHat, ntp_daemon: ntpd }
+
+- name: restart ntp
+  service: name={{ item.ntp_daemon }} state=restarted
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, ntp_daemon: ntp }
+    - { os: RedHat, ntp_daemon: ntpd }

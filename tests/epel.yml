@@ -1,0 +1,6 @@
+---
+- name: Test EPEL repo
+  hosts: all
+  sudo: yes
+  roles:
+    - epel

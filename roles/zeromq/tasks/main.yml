@@ -1,0 +1,26 @@
+---
+- name: Create ZeroMQ directory
+  tags: zeromq
+  file: path={{ zeromq_folder }} state=directory
+
+- name: Download ZeroMQ
+  tags: zeromq
+  get_url: url=http://download.zeromq.org/zeromq-{{ zeromq_version }}.tar.gz dest={{ zeromq_folder }}/zeromq-{{ zeromq_version }}.tar.gz
+
+- name: Extract ZeroMQ
+  tags: zeromq
+  command: tar xzf {{ zeromq_folder }}/zeromq-{{ zeromq_version }}.tar.gz chdir={{ zeromq_folder }} creates={{ zeromq_folder }}/zeromq-{{ zeromq_version }}
+
+- name: Configure and make ZeroMQ
+  tags: zeromq
+  shell: ./configure
+  args:
+    chdir: '{{ zeromq_folder }}/zeromq-{{ zeromq_version }}'
+    creates: Makefile
+
+- name: Install ZeroMQ
+  tags: zeromq
+  shell: make && make install && ldconfig
+  args:
+    chdir: '{{ zeromq_folder }}/zeromq-{{ zeromq_version }}'
+    creates: /usr/local/include/zmq.h

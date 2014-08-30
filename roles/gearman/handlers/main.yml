@@ -1,0 +1,21 @@
+---
+- name: start gearman
+  service: name={{ item.gearman_daemon }} state=started
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, gearman_daemon: gearman-job-server }
+    - { os: RedHat, gearman_daemon: gearmand }
+
+- name: stop gearman
+  service: name={{ item.gearman_daemon }} state=stopped
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, gearman_daemon: gearman-job-server }
+    - { os: RedHat, gearman_daemon: gearmand }
+
+- name: restart gearman
+  service: name={{ item.gearman_daemon }} state=restarted
+  when: ansible_os_family == '{{ item.os }}'
+  with_items:
+    - { os: Debian, gearman_daemon: gearman-job-server }
+    - { os: RedHat, gearman_daemon: gearmand }

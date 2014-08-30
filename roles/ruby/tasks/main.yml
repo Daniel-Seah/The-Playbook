@@ -1,0 +1,20 @@
+---
+- include: rvm.yml
+
+- name: Install Ruby
+  tags: ruby
+  command: rvm install {{ ruby_version }}
+  changed_when: not rvm_install_result.stderr|search('Already')
+  register: rvm_install_result
+
+- name: Check current Ruby version
+  tags: ruby
+  command: rvm alias show default
+  register: rvm_default
+  ignore_errors: yes
+  changed_when: false
+
+- name: Set installed Ruby as default
+  tags: ruby
+  shell: rvm alias delete default && rvm alias create default {{ ruby_version }}
+  when: not rvm_default.stdout|search('^{{ ruby_version }}')

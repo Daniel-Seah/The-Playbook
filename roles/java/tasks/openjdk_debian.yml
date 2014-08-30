@@ -1,0 +1,4 @@
+---
+- name: Install OpenJDK (Debian)
+  tags: java
+  apt: name=openjdk-{{ java_version }}-jdk state=latest

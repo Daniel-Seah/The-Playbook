@@ -1,0 +1,10 @@
+---
+- name: Install Git (Debian)
+  tags: git
+  apt: name=git state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Install Git (RedHat)
+  tags: git
+  yum: name=git state=latest
+  when: ansible_os_family == 'RedHat'

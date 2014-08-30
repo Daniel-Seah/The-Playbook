@@ -1,0 +1,51 @@
+---
+- name: Create ActiveMQ directory
+  tags: activemq
+  file: path={{ activemq_folder }} state=directory
+
+- name: Find closest ActiveMQ download mirror
+  tags: activemq
+  register: mirrors
+  local_action: uri url=http://www.apache.org/dyn/closer.cgi?path=/activemq/{{ activemq_version }}/apache-activemq-{{ activemq_version }}-bin.tar.gz&as_json=1 return_content=yes
+
+- name: Download ActiveMQ
+  tags: activemq
+  get_url: url={{ item }}{{ (mirrors.content|from_json).path_info }} dest={{ activemq_folder }}/apache-activemq-{{ activemq_version }}-bin.tar.gz
+  with_flattened:
+    - (mirrors.content|from_json).preferred
+    - (mirrors.content|from_json).backup
+
+- name: Extract ActiveMQ
+  tags: activemq
+  command: tar xzf {{ activemq_folder }}/apache-activemq-{{ activemq_version }}-bin.tar.gz chdir={{ activemq_folder }} creates={{ activemq_folder }}/apache-activemq-{{ activemq_version }}
+
+- name: Set ActiveMQ execute permission
+  tags: activemq
+  file: path={{ activemq_folder }}/apache-activemq-{{ activemq_version }}/bin/activemq mode=0755
+
+- name: Inject lines for chkconfig
+  tags: activemq
+  lineinfile: 'dest={{ activemq_folder }}/apache-activemq-{{ activemq_version }}/bin/activemq regexp="# chkconfig: 345 88 12" line="# chkconfig: 345 88 12"'
+
+- name: Add init.d link
+  tags: activemq
+  file: src={{ activemq_folder }}/apache-activemq-{{ activemq_version }}/bin/activemq dest=/etc/init.d/activemq state=link mode=0755
+
+- name: Install ActiveMQ as service (Debian)
+  tags: activemq
+  command: update-rc.d activemq start 66 2 3 4 5 . stop 34 0 1 6 .
+  register: amq_result
+  when: ansible_os_family == 'Debian'
+  changed_when: not amq_result.stdout|search("already exist")
+
+- name: Check if ActiveMQ is already installed as a service (RedHat)
+  tags: activemq
+  command: chkconfig
+  register: amq_service_result
+  when: ansible_os_family == 'RedHat'
+  changed_when: false
+
+- name: Install ActiveMQ as service (RedHat)
+  tags: activemq
+  command: chkconfig --add /etc/init.d/activemq
+  when: ansible_os_family == 'RedHat' and not amq_service_result.stdout|search("activemq")
